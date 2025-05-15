@@ -12,7 +12,11 @@ class ThermalCameraPublisher(Node):
         super().__init__('thermal_camera_publisher')
         self.publisher_img = self.create_publisher(Image, 'thermal_image', 10)
         self.timer = self.create_timer(0.1, self.timer_callback)
-        self.device_id = 4 # Default camera device ID 後ほど動的変数に変更
+        
+        # ← Parameterとして宣言
+        self.declare_parameter('device_id', 4)
+        self.device_id = self.get_parameter("device_id").get_parameter_value().integer_value
+        
         self.cap = cv2.VideoCapture(self.device_id, cv2.CAP_V4L)  # Open the thermal camera
         self.cap.set(cv2.CAP_PROP_CONVERT_RGB, 0.0)
         self.bridge = CvBridge()
